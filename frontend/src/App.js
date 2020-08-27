@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@material-ui/core";
 import { Grid } from "@material-ui/core";
 import { TextField } from "@material-ui/core";
@@ -9,8 +9,10 @@ const Field = (props) => {
     <TextField
       id={props.id}
       label={props.label}
+      type={"Number"}
       style={{
         width: "calc(100% - 24px)",
+        marginTop: "30px",
       }}
       variant={"outlined"}
     />
@@ -23,12 +25,16 @@ function createData(word, freq) {
 function App() {
   const [loading, setLoading] = useState(false);
   const [fetchedData, setFetchedData] = useState([]);
-  const fetchData = (queryNum) => {
+  const fetchData = () => {
     if (loading) {
       return;
     }
+    var queryNumber = document.getElementById("querynumber").value;
+    if (queryNumber < 1) {
+      return;
+    }
     setLoading(true);
-    fetch("http://localhost:5050/getfrequentword?q=" + queryNum)
+    fetch("http://localhost:5050/getfrequentword?q=" + queryNumber)
       .then((res) => res.json())
       .then((data) => {
         console.log("working");
@@ -42,19 +48,20 @@ function App() {
         setFetchedData(rows);
       });
   };
-  // const handlequery = (event) => {
-  //   console.log(event.target.value);
-  //   setQueryNum(event.target.value);
-  // };
 
   return (
-    <div style={{ backgroundColor: "#cacaca", height: "800px" }}>
-      <Grid containerjustify="center">
+    <div
+      style={{
+        flex: "1",
+        justifyContent: "center",
+      }}
+    >
+      <Grid container justify="center">
         <Grid item md={6} xs={12}>
           <Field id={"querynumber"} label={"Enter number"} />
         </Grid>
-
-        <Grid item md={6} xs={12} style={{ marginTop: "30px" }}>
+        <Grid item md={12} xs={12} />
+        <Grid item md={2} xs={6} style={{ marginTop: "30px" }}>
           <Button
             variant="contained"
             color="primary"
@@ -65,14 +72,15 @@ function App() {
             Fetch Max Freq Words
           </Button>
         </Grid>
+        <Grid item md={12} xs={12} />
+        {!loading ? (
+          <Grid item md={6} xs={12} style={{ marginTop: "30px" }}>
+            <StyledTable rows={fetchedData} />
+          </Grid>
+        ) : (
+          <div />
+        )}
       </Grid>
-      {!loading ? (
-        <Grid item md={6} xs={12} style={{ marginTop: "30px" }}>
-          <StyledTable rows={fetchedData} />
-        </Grid>
-      ) : (
-        <div />
-      )}
     </div>
   );
 }
