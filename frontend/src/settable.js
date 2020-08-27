@@ -14,7 +14,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function StyledTable(data) {
+const StyledTable = (props) => {
   const classes = useStyles();
 
   return (
@@ -27,7 +27,7 @@ export default function StyledTable(data) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
+          {props.rows.map((row) => (
             <TableRow key={row.word}>
               <TableCell component="th" scope="row">
                 {row.word}
@@ -39,4 +39,6 @@ export default function StyledTable(data) {
       </Table>
     </TableContainer>
   );
-}
+};
+
+export default StyledTable;
